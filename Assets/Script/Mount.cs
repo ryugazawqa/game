@@ -51,6 +51,19 @@ public class Mount : MonoBehaviour
             player.transform.SetParent(mountPoint);
             player.transform.localPosition = Vector3.zero;
 
+            // Rigidbody ve Collider'ı devre dışı bırak
+            Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
+            if (playerRb != null)
+            {
+                playerRb.simulated = false;
+            }
+
+            Collider2D playerCol = player.GetComponent<Collider2D>();
+            if (playerCol != null)
+            {
+                playerCol.enabled = false;
+            }
+
             // Karakter animasyonlarını durdur
             Animator playerAnimator = player.GetComponent<Animator>();
             if (playerAnimator != null)
@@ -74,6 +87,20 @@ public class Mount : MonoBehaviour
             // Binekten in
             player.transform.SetParent(null);
             player.transform.position = transform.position + Vector3.right * 2f;
+
+
+            // Rigidbody ve Collider'ı tekrar aktif et
+            Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
+            if (playerRb != null)
+            {
+                playerRb.simulated = true;
+            }
+
+            Collider2D playerCol = player.GetComponent<Collider2D>();
+            if (playerCol != null)
+            {
+                playerCol.enabled = true;
+            }
 
             // Left Leg'i pasif et
             Transform leftLeg = player.transform.Find("Left Leg");
