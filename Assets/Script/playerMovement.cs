@@ -30,14 +30,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (!isMounted) // Eğer binekli değilse normal hareket et
-        {
-            Move();
-            CheckGrounded();
-            HandleJump();
-            handleAttack();
-        }
+        if (isMounted) return;
 
+        Move();
+        CheckGrounded();
+        HandleJump();
+        handleAttack();
         CheckForMount(); // Yakındaki binek ara
         HandleMountInput(); // E tuşu kontrolü
         Debug.Log(rb.linearVelocity.ToString());
@@ -148,6 +146,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 // Bineğe binince karakter hareketini durdur
                 rb.linearVelocity = Vector2.zero;
+                
                 isMounted = true;
             }
             else
