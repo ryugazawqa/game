@@ -44,6 +44,7 @@ public class Mount : MonoBehaviour
 
     public void ToggleMount(GameObject playerObj)
     {
+        Debug.Log("tETİKLENDİ");
         if (!isMounted)
         {
             // Bineğe bin
@@ -84,6 +85,8 @@ public class Mount : MonoBehaviour
         }
         else
         {
+
+            //Burayı düzenle aşağı düşmesin 
             // Binekten in
             player.transform.SetParent(null);
             player.transform.position = transform.position + Vector3.right * 2f;

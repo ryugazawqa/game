@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -30,14 +31,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+
+        CheckForMount(); // Yakındaki binek ara
+        HandleMountInput(); // E tuşu kontrolü
+
         if (isMounted) return;
 
         Move();
         CheckGrounded();
         HandleJump();
         handleAttack();
-        CheckForMount(); // Yakındaki binek ara
-        HandleMountInput(); // E tuşu kontrolü
+
         Debug.Log(rb.linearVelocity.ToString());
     }
 
@@ -49,6 +53,7 @@ public class PlayerMovement : MonoBehaviour
         if (InputManager.Movement.x != 0)
         {
             _animator.SetBool("isRunning", true);
+            _animator.SetTrigger("isAttack");
         }
         else
         {
@@ -126,8 +131,11 @@ public class PlayerMovement : MonoBehaviour
         Mount[] mounts = FindObjectsByType<Mount>(FindObjectsSortMode.None);
         nearbyMount = null;
 
-        foreach (Mount mount in mounts)
+       
+        for (int i = 0; i < mounts.Length; i++)
         {
+            Mount mount = mounts[i]; 
+
             float distance = Vector3.Distance(transform.position, mount.transform.position);
             if (distance <= mountRange)
             {
@@ -140,6 +148,8 @@ public class PlayerMovement : MonoBehaviour
     // E tuşu kontrolü
     private void HandleMountInput()
     {
+        Debug.Log(InputManager.interactPressed);
+        Debug.Log(nearbyMount.IsUnityNull());
         if (InputManager.interactPressed && nearbyMount != null)
         {
             if (!isMounted)
@@ -153,8 +163,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 isMounted = false;
             }
-
+            Debug.Log("tetiklendi1");
             nearbyMount.ToggleMount(gameObject);
         }
+        
     }
 }
