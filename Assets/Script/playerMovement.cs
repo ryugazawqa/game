@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
         HandleJump();
         handleAttack();
 
-        Debug.Log(rb.linearVelocity.ToString());
+     
     }
 
     private void Move()
@@ -53,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
         if (InputManager.Movement.x != 0)
         {
             _animator.SetBool("isRunning", true);
-            _animator.SetTrigger("isAttack");
+          
         }
         else
         {
@@ -148,8 +148,7 @@ public class PlayerMovement : MonoBehaviour
     // E tuşu kontrolü
     private void HandleMountInput()
     {
-        Debug.Log(InputManager.interactPressed);
-        Debug.Log(nearbyMount.IsUnityNull());
+
         if (InputManager.interactPressed && nearbyMount != null)
         {
             if (!isMounted)

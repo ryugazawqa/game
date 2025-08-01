@@ -9,6 +9,8 @@ public class Mount : MonoBehaviour
     private Rigidbody2D rb;
     private bool isMounted = false;
     private GameObject player;
+    private bool isMountfaceRight = true;
+
     [SerializeField] private Transform _groundCheck;
     [SerializeField] private float _groundCheckRadius = 0.2f;
     [SerializeField] private LayerMask _groundLayerMask;
@@ -30,15 +32,49 @@ public class Mount : MonoBehaviour
     {
         if (isMounted)
         {
-            // Binek hareket etsin
-            float horizontal = InputManager.Movement.x;
-            rb.linearVelocity = new Vector2(InputManager.Movement.x * mountSpeed, rb.linearVelocity.y);
+            Move();
+        }
+    }
 
-            // Animasyon
-            if (mountAnimator != null)
-            {
-                mountAnimator.SetBool("isRunning", Mathf.Abs(horizontal) > 0.1f);
-            }
+    private void Move()
+    {
+        TurnCheck();
+
+        float horizontal = InputManager.Movement.x;
+        rb.linearVelocity = new Vector2(horizontal * mountSpeed, rb.linearVelocity.y);
+
+        // Animasyon (PlayerMovement'teki mantığa uygun)
+        if (mountAnimator != null)
+        {
+            mountAnimator.SetBool("isRunning", Mathf.Abs(horizontal) > 0.1f);
+        }
+    }
+
+    private void TurnCheck()
+    {
+        float horizontal = InputManager.Movement.x;
+
+        if (isMountfaceRight && horizontal < 0)
+        {
+            Turn(false);
+        }
+        else if (!isMountfaceRight && horizontal > 0)
+        {
+            Turn(true);
+        }
+    }
+
+    private void Turn(bool turnRight)
+    {
+        if (turnRight)
+        {
+            isMountfaceRight = true;
+            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        }
+        else
+        {
+            isMountfaceRight = false;
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
         }
     }
 
@@ -47,8 +83,12 @@ public class Mount : MonoBehaviour
         Debug.Log("tETİKLENDİ");
         if (!isMounted)
         {
+
             // Bineğe bin
             player = playerObj;
+
+            player.transform.rotation = transform.rotation * Quaternion.Euler(0f, 180f, 0f);
+
             player.transform.SetParent(mountPoint);
             player.transform.localPosition = Vector3.zero;
 
@@ -88,16 +128,25 @@ public class Mount : MonoBehaviour
 
             //Burayı düzenle aşağı düşmesin 
             // Binekten in
-            player.transform.SetParent(null);
-            player.transform.position = transform.position + Vector3.right * 2f;
+            // ÖNCE pozisyonu mount'un yanına al (collider çakışmasını önle)
+            Vector3 dismountPos = new Vector3(
+                transform.position.x + 2f,
+                transform.position.y + 1f, // Biraz yukarı da koy
+                transform.position.z
+            );
 
+            player.transform.SetParent(null);
+            player.transform.position = dismountPos;
 
             // Rigidbody ve Collider'ı tekrar aktif et
             Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
             if (playerRb != null)
             {
                 playerRb.simulated = true;
+                playerRb.linearVelocity = Vector2.zero;
             }
+
+
 
             Collider2D playerCol = player.GetComponent<Collider2D>();
             if (playerCol != null)
