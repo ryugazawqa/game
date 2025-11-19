@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -25,6 +26,8 @@ public class Enemy : MonoBehaviour
         _animator = GetComponent<Animator>();
         isEnemyFaceRight = false;
         lastAttackTime = -attackCooldown; // Ýlk saldýrýnýn hemen gerçekleþmesi için
+
+        lastSpecialAttackTime = -specialAttackCooldown;
     }
 
     private void Update()
@@ -83,12 +86,73 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        isAtacking = true;
-        rb.linearVelocity = Vector2.zero;
-        _animator.SetTrigger("AttackEnemy");
-        _animator.SetFloat("SpeedEnemy", 0);
+        if (Time.time < lastSpecialAttackTime + specialAttackCooldown)
+        {
+            isAtacking = true;
+            rb.linearVelocity = Vector2.zero;
+            _animator.SetTrigger("AttackEnemy");
+            _animator.SetFloat("SpeedEnemy", 0);
+
+            lastAttackTime = Time.time;
+
+            return;
+        }   
+
+        StartSpecialAttack();
+
+      
         lastAttackTime = Time.time;
     }
+
+    [Header("Special Attack Stats")]
+    [SerializeField] private int specialAttackCount = 3; // Kaç kere ýþýnlanýp saldýracak
+    [SerializeField] private float specialTeleportDistance = 2f;
+    [SerializeField] private float specialAttackCooldown = 10f;
+    private float lastSpecialAttackTime;
+
+    private int currentAttackCount = 0;
+
+    private void StartSpecialAttack()
+    {
+        isAtacking = true;
+        rb.linearVelocity = Vector2.zero;
+        _animator.SetFloat("SpeedEnemy", 0);
+        currentAttackCount = 0;
+
+        StartCoroutine(SpecialAttackSequence());
+
+
+    }
+
+    private IEnumerator SpecialAttackSequence()
+    {
+        
+        while (currentAttackCount < specialAttackCount)
+        {
+            
+            float direction = isEnemyFaceRight ? 1 : -1;
+
+           
+            Vector2 targetPosition = (Vector2)transform.position + new Vector2(direction * specialTeleportDistance, 0);
+
+            
+            transform.position = targetPosition;
+
+            
+            _animator.SetTrigger("AttackEnemy");
+
+            
+            currentAttackCount++;
+
+           
+            yield return new WaitForSeconds(1f);
+        }
+
+        lastSpecialAttackTime = Time.time;
+        
+        EndAttack();
+    }
+
 
     private void StopMoving()
     {
@@ -113,18 +177,39 @@ public class Enemy : MonoBehaviour
         if (turnRight)
         {
             isEnemyFaceRight = true;
-            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
         }
         else
         {
             isEnemyFaceRight = false;
-            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
         }
     }
 
-    // Bu metot, animasyon event'i ile çaðrýlýr
-    public void EndAttack()
+   
+    void EndAttack()
+
     {
+        if (currentAttackCount > 0 && currentAttackCount < specialAttackCount)
+
+        {
+            return;
+        }
+
+        if (nearbyPlayer != null)
+
+        {
+
+            float directionToPlayer = nearbyPlayer.transform.position.x - transform.position.x;
+
+            TurnCheck(directionToPlayer);
+
+        }
+
+        
+
         isAtacking = false;
+
     }
+
 }
