@@ -80,29 +80,23 @@ public class Enemy : MonoBehaviour
 
     private void Attack()
     {
-        // Saldýrý bekleme süresi dolmadýysa veya zaten saldýrýyorsa fonksiyondan çýk
+        
         if (Time.time < lastAttackTime + attackCooldown || isAtacking)
         {
             return;
         }
 
-        if (Time.time < lastSpecialAttackTime + specialAttackCooldown)
+        if (Time.time >= lastSpecialAttackTime + specialAttackCooldown)
         {
-            isAtacking = true;
-            rb.linearVelocity = Vector2.zero;
-            _animator.SetTrigger("AttackEnemy");
-            _animator.SetFloat("SpeedEnemy", 0);
-
-            lastAttackTime = Time.time;
-
-            return;
-        }   
-
-        StartSpecialAttack();
-
+            lastSpecialAttackTime = Time.time;
+            StartSpecialAttack();
+        }
+      
       
         lastAttackTime = Time.time;
     }
+
+
 
     [Header("Special Attack Stats")]
     [SerializeField] private int specialAttackCount = 3; // Kaç kere ýþýnlanýp saldýracak
@@ -114,10 +108,11 @@ public class Enemy : MonoBehaviour
 
     private void StartSpecialAttack()
     {
+        currentAttackCount = 0;
         isAtacking = true;
         rb.linearVelocity = Vector2.zero;
         _animator.SetFloat("SpeedEnemy", 0);
-        currentAttackCount = 0;
+        
 
         StartCoroutine(SpecialAttackSequence());
 
@@ -126,32 +121,44 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator SpecialAttackSequence()
     {
-        
+        transform.rotation = Quaternion.Euler(0f, 0f, 45f);
+
         while (currentAttackCount < specialAttackCount)
         {
             
             float direction = isEnemyFaceRight ? 1 : -1;
 
            
-            Vector2 targetPosition = (Vector2)transform.position + new Vector2(direction * specialTeleportDistance, 0);
+            Vector2 targetPosition = (Vector2)transform.position + new Vector2(direction * specialTeleportDistance, 3);
 
             
             transform.position = targetPosition;
 
-            
+            rb.gravityScale = 0f;
+
+            yield return new WaitForSeconds(1f);
+
+
             _animator.SetTrigger("AttackEnemy");
 
-            
+            Debug.Log($"Saldýrý Tetiklendi: {currentAttackCount + 1}. Toplam hedef: {specialAttackCount}");
+
+
             currentAttackCount++;
 
-           
+            rb.gravityScale = 1f;
+
+
+
             yield return new WaitForSeconds(1f);
         }
+        Debug.Log("Özel Saldýrý Dizisi Bitti!"); 
 
         lastSpecialAttackTime = Time.time;
         
         EndAttack();
     }
+
 
 
     private void StopMoving()
@@ -190,11 +197,7 @@ public class Enemy : MonoBehaviour
     void EndAttack()
 
     {
-        if (currentAttackCount > 0 && currentAttackCount < specialAttackCount)
-
-        {
-            return;
-        }
+       
 
         if (nearbyPlayer != null)
 

@@ -2057,7 +2057,7 @@ MonoBehaviour:
   attackCooldown: 3
   specialAttackCount: 3
   specialTeleportDistance: 8
-  specialAttackCooldown: 20
+  specialAttackCooldown: 10
 --- !u!1001 &1579929585
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2069,6 +2069,42 @@ PrefabInstance:
     - target: {fileID: 1423470163212545534, guid: 112306b97b015ba4c87ece5d14c48895, type: 3}
       propertyPath: m_Name
       value: WildRooster
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027871452395046274, guid: 112306b97b015ba4c87ece5d14c48895, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027871452395046274, guid: 112306b97b015ba4c87ece5d14c48895, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027871452395046274, guid: 112306b97b015ba4c87ece5d14c48895, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027871452395046274, guid: 112306b97b015ba4c87ece5d14c48895, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027871452395046274, guid: 112306b97b015ba4c87ece5d14c48895, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027871452395046274, guid: 112306b97b015ba4c87ece5d14c48895, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027871452395046274, guid: 112306b97b015ba4c87ece5d14c48895, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027871452395046274, guid: 112306b97b015ba4c87ece5d14c48895, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2027871452395046274, guid: 112306b97b015ba4c87ece5d14c48895, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2374989008031308591, guid: 112306b97b015ba4c87ece5d14c48895, type: 3}
       propertyPath: m_LocalScale.x
