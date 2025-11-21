@@ -9,6 +9,9 @@ public class Enemy : MonoBehaviour
     private bool isEnemyFaceRight;
     private bool isAtacking = false;
 
+    [Header("effect")]
+    [SerializeField] private GameObject firstSpeacialEffect;
+
     // Son saldýrýdan bu yana geçen süreyi tutmak için
     private float lastAttackTime;
 
@@ -110,9 +113,10 @@ public class Enemy : MonoBehaviour
     {
         currentAttackCount = 0;
         isAtacking = true;
+       
         rb.linearVelocity = Vector2.zero;
+       
         _animator.SetFloat("SpeedEnemy", 0);
-        
 
         StartCoroutine(SpecialAttackSequence());
 
@@ -121,7 +125,7 @@ public class Enemy : MonoBehaviour
 
     private IEnumerator SpecialAttackSequence()
     {
-        transform.rotation = Quaternion.Euler(0f, 0f, 45f);
+        
 
         while (currentAttackCount < specialAttackCount)
         {
@@ -129,17 +133,22 @@ public class Enemy : MonoBehaviour
             float direction = isEnemyFaceRight ? 1 : -1;
 
            
-            Vector2 targetPosition = (Vector2)transform.position + new Vector2(direction * specialTeleportDistance, 3);
+            Vector2 targetPosition = (Vector2)transform.position + new Vector2(direction * specialTeleportDistance, 4);
+
 
             
             transform.position = targetPosition;
 
+            transform.rotation = Quaternion.Euler(0f, 0f, 45f);
+
             rb.gravityScale = 0f;
 
-            yield return new WaitForSeconds(1f);
-
-
             _animator.SetTrigger("AttackEnemy");
+
+            specialAttackEffect1();
+
+            yield return new WaitForSeconds(0.8f);
+
 
             Debug.Log($"Saldýrý Tetiklendi: {currentAttackCount + 1}. Toplam hedef: {specialAttackCount}");
 
@@ -157,6 +166,17 @@ public class Enemy : MonoBehaviour
         lastSpecialAttackTime = Time.time;
         
         EndAttack();
+    }
+
+    private void specialAttackEffect1()
+    {
+        if(firstSpeacialEffect != null)
+        {
+            Vector3 effectPosition = transform.position;
+            effectPosition.y -= 3f;
+            effectPosition.z -= 3f;
+            Instantiate(firstSpeacialEffect, effectPosition, Quaternion.identity);
+        }
     }
 
 
@@ -209,7 +229,7 @@ public class Enemy : MonoBehaviour
 
         }
 
-        
+       
 
         isAtacking = false;
 
