@@ -19,9 +19,12 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float enemySpeed;
     [SerializeField] private float playerRange = 5f;
     [SerializeField] private float attackRange = 1.5f;
+   
+
 
     // Ýki saldýrý arasý bekleme süresi
     [SerializeField] private float attackCooldown = 2f;
+
 
     private void Awake()
     {
@@ -31,6 +34,7 @@ public class Enemy : MonoBehaviour
         lastAttackTime = -attackCooldown; // Ýlk saldýrýnýn hemen gerçekleþmesi için
 
         lastSpecialAttackTime = -specialAttackCooldown;
+        lastSpecialAttackTime2 = -specialAttackCooldown2;
     }
 
     private void Update()
@@ -93,19 +97,30 @@ public class Enemy : MonoBehaviour
         {
             lastSpecialAttackTime = Time.time;
             StartSpecialAttack();
+            return;
+        }
+
+        if(Time.time >= lastSpecialAttackTime2 + specialAttackCooldown2 && Time.time >= lastSpecialAttackTime + minTimeAfterAttack1)
+        {
+            lastSpecialAttackTime2 = Time.time;
+            SpecialAttack2();
+            return;
         }
       
-      
         lastAttackTime = Time.time;
+        
     }
 
 
 
     [Header("Special Attack Stats")]
-    [SerializeField] private int specialAttackCount = 3; // Kaç kere ýþýnlanýp saldýracak
+    [SerializeField] private int specialAttackCount = 3; 
     [SerializeField] private float specialTeleportDistance = 2f;
     [SerializeField] private float specialAttackCooldown = 10f;
+    [SerializeField] private float specialAttackCooldown2 = 10f;
+    [SerializeField] private float minTimeAfterAttack1 = 4;
     private float lastSpecialAttackTime;
+    private float lastSpecialAttackTime2;
 
     private int currentAttackCount = 0;
 
@@ -123,6 +138,38 @@ public class Enemy : MonoBehaviour
 
     }
 
+    [Header("Special Attack 2 Stats")] 
+    [SerializeField] private float specialAttack2Duration = 1.0f;
+
+    private void SpecialAttack2()
+    {
+        rb.linearVelocity = Vector2.zero;
+        _animator.SetFloat("SpeedEnemy", 0);
+        isAtacking = true;
+
+        if (nearbyPlayer != null)
+        {
+            float directionToPlayer = nearbyPlayer.transform.position.x - transform.position.x;
+            TurnCheck(directionToPlayer);
+
+            _animator.SetTrigger("specialAttack2");
+
+            StartCoroutine(WaitForAnimation(specialAttack2Duration));
+
+            lastSpecialAttackTime2 = Time.time;
+        }
+
+    }
+
+    private IEnumerator WaitForAnimation(float duration)
+    {
+        
+        yield return new WaitForSeconds(duration);
+
+      
+        EndAttack();
+    }
+
     private IEnumerator SpecialAttackSequence()
     {
         
@@ -133,7 +180,7 @@ public class Enemy : MonoBehaviour
             float direction = isEnemyFaceRight ? 1 : -1;
 
            
-            Vector2 targetPosition = (Vector2)transform.position + new Vector2(direction * specialTeleportDistance, 4);
+            Vector2 targetPosition = (Vector2)transform.position + new Vector2(direction * specialTeleportDistance,3);
 
 
             
@@ -157,7 +204,7 @@ public class Enemy : MonoBehaviour
 
             rb.gravityScale = 1f;
 
-
+            
 
             yield return new WaitForSeconds(1f);
         }
@@ -217,7 +264,7 @@ public class Enemy : MonoBehaviour
     void EndAttack()
 
     {
-       
+        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, 0f);
 
         if (nearbyPlayer != null)
 
