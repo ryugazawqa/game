@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5fe34c8587b0a124e86a601bc891ebb1
+timeCreated: 1456502561
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 67922
+  packageName: Button Sound Editor
+  packageVersion: 1.1
+  assetPath: Assets/Plugins/ButtonSoundsEditor/Examples/TestScene.unity
+  uploadId: 171134

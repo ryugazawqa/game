@@ -1,0 +1,37 @@
+.header {
+    width: 40px;
+    height: 20px;
+    font-size: 80px;
+    -unity-font-definition: resource('FlatSkin/Font/Roboto-Medium');
+    -unity-text-align: upper-center;
+    -unity-font-style: bold;
+}
+
+.button {
+    font-size: 35px;
+    width: 220px;
+    height: 60px;
+    align-self: center;
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+    border-bottom-left-radius: 40px;
+    background-image: url("project://database/Assets/Buttons/PNG/6button_green_middle.png?fileID=21300000&guid=a16c91ca6a9a60b4596b57635c8a3e71&type=3#6button_green_middle");
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+    margin-top: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    transition-duration: 0.35s;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/Fonts/BLKCHCRY.TTF?fileID=12800000&guid=e93a4f423bcd75d4aaff71db3c9c2313&type=3#BLKCHCRY");
+}
+
+.button:hover {
+    scale: 1.2 1.2;
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+}
