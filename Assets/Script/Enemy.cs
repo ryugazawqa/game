@@ -9,6 +9,9 @@ public class Enemy : MonoBehaviour
     private bool isEnemyFaceRight;
     private bool isAtacking = false;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+
     [Header("effect")]
     [SerializeField] private GameObject firstSpeacialEffect;
 
@@ -83,6 +86,13 @@ public class Enemy : MonoBehaviour
         rb.linearVelocity = new Vector2(direction.x * enemySpeed, rb.linearVelocity.y);
         TurnCheck(direction.x);
         _animator.SetFloat("SpeedEnemy", Mathf.Abs(rb.linearVelocity.x));
+
+        if (audioSource != null && !audioSource.isPlaying)
+        {
+           
+            audioSource.Play();
+        }
+
     }
 
     private void Attack()
@@ -232,6 +242,11 @@ public class Enemy : MonoBehaviour
     {
         rb.linearVelocity = Vector2.zero;
         _animator.SetFloat("SpeedEnemy", 0);
+
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
     }
 
     private void TurnCheck(float horizontalDirection)

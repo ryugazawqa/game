@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 public class MainMenuEvents : MonoBehaviour
 {
@@ -40,7 +41,7 @@ public class MainMenuEvents : MonoBehaviour
 
     private void onPlayGameClick(ClickEvent evt)
     {
-        Debug.Log("you pressed start the button");
+        SceneManager.LoadScene("LEVEL1");
     }
 
     private void OnAllButtonClick(ClickEvent evt)
