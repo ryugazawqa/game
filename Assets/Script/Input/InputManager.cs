@@ -8,11 +8,13 @@ public class InputManager : MonoBehaviour
     public static bool jumpPressed;
     public static bool attackPressed;
     public static bool interactPressed; // E tuþu için eklendi
+    public static bool dashPressed; // Dash leftShift
 
     private InputAction _moveAction;
     private InputAction _jumpAction;
     private InputAction attackAction;
     private InputAction interactAction; // E tuþu action'ý
+    private InputAction dashAction;  // Dash lefShift
 
     private void Awake()
     {
@@ -21,6 +23,7 @@ public class InputManager : MonoBehaviour
         _jumpAction = playerInput.actions["Jump"];
         attackAction = playerInput.actions["Attack"];
         interactAction = playerInput.actions["Interact"]; // E tuþu action'ý
+        dashAction = playerInput.actions["Dash"];
     }
 
     private void Update()
@@ -29,5 +32,6 @@ public class InputManager : MonoBehaviour
         jumpPressed = _jumpAction.WasPressedThisFrame();
         attackPressed = attackAction.WasPressedThisFrame();
         interactPressed = interactAction.WasPressedThisFrame(); // E tuþu kontrolü
+        dashPressed = dashAction.WasPressedThisFrame();// leftShift 
     }
 }

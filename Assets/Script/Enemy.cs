@@ -207,8 +207,6 @@ public class Enemy : MonoBehaviour
             yield return new WaitForSeconds(0.8f);
 
 
-            Debug.Log($"Saldýrý Tetiklendi: {currentAttackCount + 1}. Toplam hedef: {specialAttackCount}");
-
 
             currentAttackCount++;
 
@@ -218,7 +216,7 @@ public class Enemy : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
         }
-        Debug.Log("Özel Saldýrý Dizisi Bitti!"); 
+       
 
         lastSpecialAttackTime = Time.time;
         
