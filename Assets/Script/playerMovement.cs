@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
     private float dashingTime = 0.2f;
     private float dashingCooldown = 0.3f;
     [SerializeField] private GameObject dashEffectPrefab;
+
 
 
     [Header("Mount Settings")]
@@ -201,7 +203,7 @@ public class PlayerMovement : MonoBehaviour
 
                 if (SlideEffect != null)
                 {
-                    Vector3 hitPosition = enemy.transform.position + new Vector3(0f, 0f, 0f);
+                    Vector3 hitPosition = enemy.transform.position + new Vector3(0f, 1f, 0f);
                     GameObject hitEffect = Instantiate(SlideEffect, hitPosition, Quaternion.identity);
 
                     Debug.Log("Slash oluştu!");
@@ -226,15 +228,34 @@ public class PlayerMovement : MonoBehaviour
 
     private void SlashAttack()
     {
-        if(SlashEffect != null)
+        if (SlashEffect != null)
         {
             Vector3 effectPosition = transform.position;
 
+           
             float offsetX = _isFacingRight ? 2f : -2f;
-
             effectPosition.x += offsetX;
 
+           
             GameObject newEffect = Instantiate(SlashEffect, effectPosition, Quaternion.identity);
+
+            ParticleSystem effectPS = newEffect.GetComponent<ParticleSystem>();
+
+            if (effectPS != null)
+            {
+                var mainModule = effectPS.main;
+
+                if (!_isFacingRight)
+                {
+                    
+                    mainModule.startRotation = new ParticleSystem.MinMaxCurve(Mathf.Deg2Rad * 180f);
+                }
+                else
+                {
+                   
+                    mainModule.startRotation = new ParticleSystem.MinMaxCurve(Mathf.Deg2Rad * 0f);
+                }
+            }
 
             Destroy(newEffect, 1.0f);
         }
