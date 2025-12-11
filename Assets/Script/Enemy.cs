@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    private EntityVfx enemyVfx; 
+
     private Rigidbody2D rb;
     private Animator _animator;
     private PlayerMovement nearbyPlayer = null;
@@ -36,6 +38,8 @@ public class Enemy : MonoBehaviour
         isEnemyFaceRight = false;
         lastAttackTime = -attackCooldown; // Ýlk saldýrýnýn hemen gerçekleþmesi için
 
+        enemyVfx = GetComponent<EntityVfx>();
+
         lastSpecialAttackTime = -specialAttackCooldown;
         lastSpecialAttackTime2 = -specialAttackCooldown2;
     }
@@ -65,6 +69,15 @@ public class Enemy : MonoBehaviour
         {
             StopMoving();
         }
+    }
+
+    public void TakeHitAndPlayVfx()
+    {
+        if (enemyVfx != null)
+        {
+            enemyVfx.PlayOnDamageVfx();
+        }
+       
     }
 
     private void FindPlayer()

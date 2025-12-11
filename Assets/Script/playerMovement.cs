@@ -5,6 +5,8 @@ using static UnityEngine.ParticleSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    protected EntityVfx entityVfx; // hasar alma kısmı
+
     private Rigidbody2D rb;
     [SerializeField] private float _movementSpeed;
     private bool _isFacingRight;
@@ -44,6 +46,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
+        entityVfx = GetComponent<EntityVfx>(); // hasar alma kısmı yapılınca yap
         rb = GetComponent<Rigidbody2D>();
         _isFacingRight = true;
         _animator = GetComponent<Animator>();
@@ -201,6 +204,14 @@ public class PlayerMovement : MonoBehaviour
                 Debug.Log("we hit " + enemy.name);
                 Debug.Log("SlideEffect null mu? " + (SlideEffect == null));
 
+                Enemy enemyScript = enemy.GetComponent<Enemy>();
+
+                if (enemyScript != null)
+                {
+                    
+                    enemyScript.TakeHitAndPlayVfx();
+                }
+
                 if (SlideEffect != null)
                 {
                     Vector3 hitPosition = enemy.transform.position + new Vector3(0f, 1f, 0f);
@@ -281,7 +292,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // E tuşu kontrolü
+    // E tuşu kontrolü  
     private void HandleMountInput()
     {
 
