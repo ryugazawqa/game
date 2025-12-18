@@ -1,3 +1,4 @@
+using Assets.FantasyMonsters.Common.Scripts;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -28,6 +29,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public LayerMask enemyLayers;
     [SerializeField] private GameObject SlideEffect;
 
+    [Header("Attack Speed Settings")]
+    [SerializeField] private float attackCooldown = 2f; 
+    private float lastAttackTime; 
+
     [Header("Dash Effect")]
     private bool canDash = true;
     private bool isDashing;
@@ -36,7 +41,9 @@ public class PlayerMovement : MonoBehaviour
     private float dashingCooldown = 0.3f;
     [SerializeField] private GameObject dashEffectPrefab;
 
-
+    [Header("Audio Settings")]
+    [SerializeField] private AudioClip chickenHurtSound;
+    private AudioSource audioSource;
 
     [Header("Mount Settings")]
     [SerializeField] private float mountRange = 2f; // Ne kadar yakında olursa E tuşu çalışır
@@ -50,6 +57,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         _isFacingRight = true;
         _animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -172,32 +180,47 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleJump()
     {
-        // Zıplama butonuna basılır ve karakter yerdeyse zıplama başlar
+       
         if (InputManager.jumpPressed && _isGrounded)
         {
             Jump();
         }
 
-        // Animator'a doğru bilgiyi gönderiyoruz
+        
         _animator.SetBool("isJumping", !_isGrounded);
     }
 
     private void Jump()
     {
-        // Yeni sistem: linearVelocity
+       
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, _jumpForce);
+    }
+
+    public void PlayerTakeDamageRooster()
+    {
+       
+        if (audioSource != null && chickenHurtSound != null)
+        {
+            audioSource.PlayOneShot(chickenHurtSound);
+        }
+
+        // Ekranın sallanması veya can gitmesi gibi diğer işlemler buraya...
+        Debug.Log("GAAAK! Tavuk gibi hasar yedik!");
     }
 
     private void handleAttack()
     {
-        if (InputManager.attackPressed)
+        if (InputManager.attackPressed && Time.time >= lastAttackTime +attackCooldown)
         {
+
+            lastAttackTime = Time.time;
+
+
             _animator.SetTrigger("isAttack");
             SlashAttack();
 
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
 
-            Debug.Log("Toplam vurulan düşman sayısı: " + hitEnemies.Length);
 
             foreach (Collider2D enemy in hitEnemies)
             {
@@ -210,6 +233,14 @@ public class PlayerMovement : MonoBehaviour
                 {
                     
                     enemyScript.TakeHitAndPlayVfx();
+                    PlayerTakeDamageRooster();
+
+                    var monster = enemy.GetComponent<Assets.FantasyMonsters.Common.Scripts.Monster>();
+                    if (monster != null)
+                    {
+                        
+                        StartCoroutine(FlashDeadHead(monster));
+                    }
                 }
 
                 if (SlideEffect != null)
@@ -225,6 +256,16 @@ public class PlayerMovement : MonoBehaviour
                     Debug.LogError("SlideEffect NULL!");
                 }
             }
+        }
+    }
+
+    private IEnumerator FlashDeadHead(Assets.FantasyMonsters.Common.Scripts.Monster monster)
+    {
+        monster.SetHead(2); 
+        yield return new WaitForSeconds(0.5f); 
+        if (monster != null) 
+        {
+            monster.SetHead(0); 
         }
     }
 
